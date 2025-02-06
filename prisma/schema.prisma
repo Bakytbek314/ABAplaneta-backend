@@ -1,0 +1,140 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id          Int          @id @default(autoincrement())
+    login       String       @unique
+    password    String
+    role        Role
+    patients    Patient[]
+    specialists Specialist[]
+    createdAt   DateTime     @default(now())
+
+    @@map("users")
+}
+
+enum Role {
+    PATIENT
+    SPECIALIST
+    ADMIN
+}
+
+model Patient {
+    id                 Int                 @id @default(autoincrement())
+    userId             Int                 @unique
+    user               User                @relation(fields: [userId], references: [id])
+    firstName          String              @map("first_name")
+    lastName           String              @map("last_name")
+    parentFirstName    String              @map("parent_first_name")
+    parentLastName     String              @map("parent_last_name")
+    birthDate          DateTime            @map("birth_date")
+    schedules          Schedule[]
+    groupSessions      GroupSession[]      @relation("GroupSessionPatient")
+    developmentResults DevelopmentResult[]
+    payments           Payment[]
+    debts              Debt[]
+
+    @@map("patients")
+}
+
+model Specialist {
+    id                 Int                 @id @default(autoincrement())
+    userId             Int                 @unique
+    user               User                @relation(fields: [userId], references: [id])
+    firstName          String              @map("first_name")
+    lastName           String              @map("last_name")
+    birthDate          DateTime            @map("birth_date")
+    specialization     String
+    salaryPercent      Float
+    schedules          Schedule[]
+    groupSessions      GroupSession[]      @relation("GroupSessionSpecialist")
+    developmentResults DevelopmentResult[]
+
+    @@map("specialists")
+}
+
+model Schedule {
+    id           Int    @id @default(autoincrement())
+    day          String
+    startTime    String
+    endTime      String
+    specialistId Int
+    patientId    Int?
+
+    specialist Specialist @relation(fields: [specialistId], references: [id])
+    patient    Patient?   @relation(fields: [patientId], references: [id])
+
+    @@map("schedule")
+}
+
+model GroupSession {
+    id          Int          @id @default(autoincrement())
+    day         String
+    startTime   String
+    endTime     String
+    patients    Patient[]    @relation("GroupSessionPatient")
+    specialists Specialist[] @relation("GroupSessionSpecialist")
+    monthlyFee  Float
+
+    @@map("group_sessions")
+}
+
+model Payment {
+    id          Int           @id @default(autoincrement())
+    patientId   Int
+    amount      Float
+    status      PaymentStatus
+    paymentDate DateTime
+    patient     Patient       @relation(fields: [patientId], references: [id])
+
+    @@map("payment")
+}
+
+enum PaymentStatus {
+    PAID
+    UNPAID
+    CANCELLED
+}
+
+model Debt {
+    id        Int      @id @default(autoincrement())
+    patientId Int
+    amount    Float
+    isPaid    Boolean  @default(false)
+    createdAt DateTime @default(now())
+    patient   Patient  @relation(fields: [patientId], references: [id])
+
+    @@map("debt")
+}
+
+model DevelopmentResult {
+    id             Int      @id @default(autoincrement())
+    patientId      Int
+    specialistId   Int
+    evaluationDate DateTime
+    progress       String
+    testResults    Int
+
+    patient    Patient    @relation(fields: [patientId], references: [id])
+    specialist Specialist @relation(fields: [specialistId], references: [id])
+
+    @@map("development_result")
+}
+
+model IncomeExpense {
+    id                 Int      @id @default(autoincrement())
+    month              Int
+    year               Int
+    totalIncome        Float    @default(0)
+    officeRent         Float    @default(0)
+    specialistSalaries Float    @default(0)
+    createdAt          DateTime @default(now())
+
+    @@map("income_expense")
+}
