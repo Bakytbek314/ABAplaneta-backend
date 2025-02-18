@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SchedulesAndSessionsService } from './schedulesAndSessions.service';
 import { CreateIndividualSessionsDto } from './dto/create-individual-sessions.dto';
 import { UpdateSessionsDto } from './dto/update-sessions.dto';
-import { GroupSession, Schedule } from '@prisma/client';
 import { CreateGroupSessionsDto } from './dto/create-group-sessions.dto';
 
 @Controller('sessions')
@@ -15,7 +14,7 @@ export class SchedulesAndSessionsController {
   }
 
   @Post("individual")
-  async createIndividualSession(@Body() createIndividualSession: CreateIndividualSessionsDto): Promise<Schedule> {
+  async createIndividualSession(@Body() createIndividualSession: CreateIndividualSessionsDto) {
     return this.schedulesAndSessionsService.createIndividualSession(createIndividualSession);
   }
 
@@ -27,5 +26,10 @@ export class SchedulesAndSessionsController {
   @Post("group")
   async createGroupSession(@Body() createGroupSession: CreateGroupSessionsDto) {
     return this.schedulesAndSessionsService.createGroupSession(createGroupSession);
+  }
+
+  @Delete("group/:id")
+  async deleteGroupSessions(@Param("id") id: number) {
+    return this.schedulesAndSessionsService.deleteGroupSessions(Number(id));
   }
 }

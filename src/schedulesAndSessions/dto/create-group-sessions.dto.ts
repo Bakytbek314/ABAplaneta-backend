@@ -1,8 +1,10 @@
 export class CreateGroupSessionsDto {
   patientIds: number[];
   specialistIds: number[];
-  startTime: string;
-  endTime: string;
+  firstStageStartTime: string;
+  firstStageEndTime: string;
+  secondStageStartTime: string;
+  secondStageEndTime: string;
   day: string;
   monthlyFee: number;
 }

@@ -31,10 +31,10 @@ model Patient {
     user               User                @relation(fields: [userId], references: [id])
     firstName          String              @map("first_name")
     lastName           String              @map("last_name")
-    parentFirstName    String              @map("parent_first_name")
-    parentLastName     String              @map("parent_last_name")
-    birthDate          DateTime            @map("birth_date")
-    schedules          Schedule[]
+    parentFirstName    String?             @map("parent_first_name")
+    parentLastName     String?             @map("parent_last_name")
+    telephoneNumber    String?             @map("telephone_number")
+    individualSession  IndividualSession[]
     groupSessions      GroupSession[]      @relation("GroupSessionPatient")
     developmentResults DevelopmentResult[]
     payments           Payment[]
@@ -49,45 +49,48 @@ model Specialist {
     user               User                @relation(fields: [userId], references: [id])
     firstName          String              @map("first_name")
     lastName           String              @map("last_name")
-    birthDate          DateTime            @map("birth_date")
     specialization     String
-    salaryPercent      Float
-    schedules          Schedule[]
+    salaryPercent      Float               @default(50) @map("salary_percent")
+    telephoneNumber    String?             @map("telephone_number")
+    individualSession  IndividualSession[]
     groupSessions      GroupSession[]      @relation("GroupSessionSpecialist")
     developmentResults DevelopmentResult[]
 
     @@map("specialists")
 }
 
-model Schedule {
+model IndividualSession {
     id           Int    @id @default(autoincrement())
     day          String
-    startTime    String
-    endTime      String
-    specialistId Int
-    patientId    Int?
+    startTime    String @map("start_time")
+    endTime      String @map("end_time")
+    specialistId Int    @map("specialist_id")
+    patientId    Int?   @map("patient_id")
 
     specialist Specialist @relation(fields: [specialistId], references: [id])
     patient    Patient?   @relation(fields: [patientId], references: [id])
 
-    @@map("schedule")
+    @@map("individual_session")
 }
 
 model GroupSession {
-    id          Int          @id @default(autoincrement())
-    day         String
-    startTime   String
-    endTime     String
-    patients    Patient[]    @relation("GroupSessionPatient")
-    specialists Specialist[] @relation("GroupSessionSpecialist")
-    monthlyFee  Float
+    id                   Int          @id @default(autoincrement())
+    day                  String
+    streamNumber         Int          @default(1) @map("stream_number")
+    firstStageStartTime  String       @default("00:00") @map("first_stage_start_time")
+    firstStageEndTime    String       @default("00:00") @map("first_stage_end_time")
+    secondStageStartTime String?      @default("00:00") @map("second_stage_start_time")
+    secondStageEndTime   String?      @default("00:00") @map("second_stage_end_time")
+    patients             Patient[]    @relation("GroupSessionPatient")
+    specialists          Specialist[] @relation("GroupSessionSpecialist")
+    monthlyFee           Float
 
     @@map("group_sessions")
 }
 
 model Payment {
     id          Int           @id @default(autoincrement())
-    patientId   Int
+    patientId   Int           @map("patient_id")
     amount      Float
     status      PaymentStatus
     paymentDate DateTime
@@ -117,7 +120,7 @@ model DevelopmentResult {
     id             Int      @id @default(autoincrement())
     patientId      Int
     specialistId   Int
-    evaluationDate DateTime
+    evaluationDate DateTime @default(now())
     progress       String
     testResults    Int
 

@@ -23,7 +23,7 @@ export class UsersController {
     return this.usersService.getPatients();
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get("specialists")
   async getSpecialists(): Promise<Specialist[]>  {
     return this.usersService.getSpecialists();

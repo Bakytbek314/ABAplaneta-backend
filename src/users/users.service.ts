@@ -17,6 +17,9 @@ export class UsersService {
 
   async getPatients(): Promise<Patient[]> {
     return this.prisma.patient.findMany({
+      orderBy: {
+        id: 'desc'
+      },
       include: {
         user: {
           select: {
@@ -24,9 +27,9 @@ export class UsersService {
             createdAt: true
           }
         },
-        schedules: true,
-        developmentResults: true,
+        individualSession: true,
         groupSessions: true,
+        developmentResults: true,
         payments: true,
         debts: true
       }
@@ -35,6 +38,9 @@ export class UsersService {
 
   async getSpecialists(): Promise<Specialist[]> {
     return this.prisma.specialist.findMany({
+      orderBy: {
+        id: 'desc'
+      },
       include: {
         user: {
           select: {
@@ -42,7 +48,7 @@ export class UsersService {
             createdAt: true
           }
         },
-        schedules: true,
+        individualSession: true,
         groupSessions: true
       }
     });

@@ -40,9 +40,9 @@ export class AuthService {
       parentLastName,
       parentFirstName,
       password,
-      birthday,
       specialization,
-      salaryPercent
+      salaryPercent,
+      phoneNumber
     } = registerDto;
 
     const hashedPassword = await bcrypt.hash(password, 5);
@@ -65,7 +65,7 @@ export class AuthService {
           lastName: lastName,
           parentFirstName: parentFirstName,
           parentLastName: parentLastName,
-          birthDate: birthday
+          telephoneNumber: phoneNumber
         },
       });
     } else if (role === 'SPECIALIST') {
@@ -77,12 +77,11 @@ export class AuthService {
           specialization: specialization,
           firstName: firstName,
           lastName: lastName,
-          salaryPercent: salaryPercent,
-          birthDate: birthday
+          salaryPercent: Number(salaryPercent),
+          telephoneNumber: phoneNumber
         },
       });
     }
     return user;
-
   }
 }
