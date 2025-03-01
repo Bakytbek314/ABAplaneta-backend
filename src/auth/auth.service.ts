@@ -1,15 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from "../prisma/prisma.service";
-import { RegisterDto } from './dto/register.dto';
+import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import * as bcrypt from "bcrypt";
+import { PrismaService } from "../prisma/prisma.service";
+import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { JwtService } from '@nestjs/jwt';
 import { AuthEntity } from './entity/auth.entity';
+import { UsersService } from 'src/users/users.service';
+import { Role } from './role/role.enum';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private jwtService: JwtService) {}
+  constructor(private prisma: PrismaService, private jwtService: JwtService, private userService: UsersService) {}
 
   async login(loginDto: LoginDto): Promise<AuthEntity> {
     const { login, password } = loginDto;
@@ -26,9 +28,18 @@ export class AuthService {
     }
 
     return {
-      accessToken: this.jwtService.sign({ userId: user.id })
+      accessToken: this.jwtService.sign({ userId: user.id, role: user.role })
     }
+  }
 
+  async validate(payload: { userId: number; role: Role }) {
+    const user = await this.userService.findOne(payload.userId);
+  
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+  
+    return user;
   }
 
   async register(registerDto: RegisterDto): Promise<User> {
