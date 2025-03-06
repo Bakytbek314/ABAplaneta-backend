@@ -5,13 +5,16 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGroupSessionDto } from '../dto/create-group-session.dto';
+import { SchedulerService } from '../scheduler/scheduler.service';
 
 @Injectable()
 export class GroupSessionsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private scheduler: SchedulerService) {}
 
   async createGroupSession(dto: CreateGroupSessionDto) {
     const { mainSpecialistId, ...rest } = dto;
+
+    await this.scheduler.validateGroupSession(dto);
 
     return this.prisma.groupSession.create({
       data: {
@@ -35,6 +38,8 @@ export class GroupSessionsService {
     const session = await this.prisma.groupSession.findUnique({
       where: { id: sessionId },
     });
+
+    await this.scheduler.validateSpecialistForGroup(specialistId, session)
 
     if (!session) {
       throw new NotFoundException('Group session not found');

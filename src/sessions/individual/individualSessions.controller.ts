@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { IndividualSessionsService } from './individualSessions.service';
 import { CreateIndividualSessionsDto } from '../dto/create-individual-sessions.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -7,8 +7,8 @@ import { Roles } from 'src/auth/role/role.decorator';
 import { Role } from 'src/auth/role/role.enum';
 
 @Controller('sessions')
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// @Roles(Role.ADMIN)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
 export class IndividulSessionsController {
   constructor(private individualSessionsService: IndividualSessionsService) {}
 

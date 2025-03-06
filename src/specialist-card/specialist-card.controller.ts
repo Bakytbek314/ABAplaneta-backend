@@ -21,8 +21,8 @@ export class SpecialistCardController {
   constructor(private specialistCardService: SpecialistCardService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'photo', maxCount: 1 },
@@ -38,7 +38,7 @@ export class SpecialistCardController {
     @Body() body: { specialistId: number; description: string },
   ) {
     return this.specialistCardService.createOrUpdate(
-      Number(body.specialistId),
+      +body.specialistId,
       body.description,
       files.photo[0],
       files.diplomaPhoto[0],
@@ -51,8 +51,8 @@ export class SpecialistCardController {
   }
 
   @Delete(':id')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   async delete(@Param('id') id: number) {
     return this.specialistCardService.delete(+id);
   }

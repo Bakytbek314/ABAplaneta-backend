@@ -13,10 +13,11 @@ export class SpecialistCardService {
     specialistId: number,
     description: string,
     photo?: any,
-    diplomaPhoto?: any,
-  ) {
+    diplomaPhoto?: any
+  ) {    
     const firstFileName = await this.fileService.createFile(photo);
     const secondFileName = await this.fileService.createFile(diplomaPhoto);
+    
     return this.prisma.specialistCard.upsert({
       where: { specialistId },
       create: {

@@ -7,8 +7,8 @@ import { Roles } from 'src/auth/role/role.decorator';
 import { Role } from 'src/auth/role/role.enum';
 
 @Controller()
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// @Roles(Role.ADMIN)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
 export class UsersController {
 
   constructor(private readonly usersService: UsersService) {}
