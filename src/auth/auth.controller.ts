@@ -14,7 +14,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post("register")
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   async register(@Body() registerDto: RegisterDto): Promise<User> {
     return this.authService.register(registerDto);
