@@ -8,6 +8,7 @@ import {
   Delete,
   Param,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import { SpecialistCardService } from './specialist-card.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
@@ -19,6 +20,11 @@ import { RolesGuard } from 'src/auth/role/roles.guard';
 @Controller('specialist-card')
 export class SpecialistCardController {
   constructor(private specialistCardService: SpecialistCardService) {}
+
+  @Get()
+  async findAll() {
+    return this.specialistCardService.findAll();
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -32,12 +38,12 @@ export class SpecialistCardController {
   async create(
     @UploadedFiles()
     files: {
-      photo?: any;
-      diplomaPhoto?: any;
+      photo: any;
+      diplomaPhoto: any;
     },
     @Body() body: { specialistId: number; description: string },
   ) {
-    return this.specialistCardService.createOrUpdate(
+    return this.specialistCardService.create(
       +body.specialistId,
       body.description,
       files.photo[0],
@@ -45,9 +51,29 @@ export class SpecialistCardController {
     );
   }
 
-  @Get()
-  async findAll() {
-    return this.specialistCardService.findAll();
+  @Patch()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'photo', maxCount: 1 },
+      { name: 'diplomaPhoto', maxCount: 1 },
+    ]),
+  )
+  async update(
+    @UploadedFiles()
+    files: {
+      photo?: any;
+      diplomaPhoto?: any;
+    },
+    @Body() body: { specialistId: number; description: string },
+  ) {
+    return this.specialistCardService.update(
+      +body.specialistId,
+      body.description,
+      files?.photo?.[0],
+      files?.diplomaPhoto?.[0],
+    );
   }
 
   @Delete(':id')

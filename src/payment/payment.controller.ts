@@ -15,8 +15,6 @@ export class PaymentController {
 
   @Post()
   async createPayment(@Body() createPaymentDto: CreatePaymentDto) {
-    console.log("createPaymentDto>>>", createPaymentDto);
-    
     return this.paymentService.createPayment(createPaymentDto);
   }
 

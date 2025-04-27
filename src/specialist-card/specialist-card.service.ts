@@ -9,29 +9,45 @@ export class SpecialistCardService {
     private fileService: FileService,
   ) {}
 
-  async createOrUpdate(
+  async create(
+    specialistId: number,
+    description: string,
+    photo: any,
+    diplomaPhoto: any,
+  ) {
+    const photoFileName = await this.fileService.createFile(photo);
+    const diplomaFileName = await this.fileService.createFile(diplomaPhoto);
+
+    return this.prisma.specialistCard.create({
+      data: {
+        specialistId,
+        description,
+        photo: photoFileName,
+        diplomaPhoto: diplomaFileName,
+      },
+    });
+  }
+
+  async update(
     specialistId: number,
     description: string,
     photo?: any,
-    diplomaPhoto?: any
-  ) {    
-    const firstFileName = await this.fileService.createFile(photo);
-    const secondFileName = await this.fileService.createFile(diplomaPhoto);
-    
-    return this.prisma.specialistCard.upsert({
+    diplomaPhoto?: any,
+  ) {
+    const updateData: any = { description };
+
+    if(photo) {
+      updateData.photo = this.fileService.createFile(photo)
+    }
+
+    if(diplomaPhoto) {
+      updateData.diplomaPhoto = this.fileService.createFile(diplomaPhoto)
+    }
+
+    return this.prisma.specialistCard.update({
       where: { specialistId },
-      create: {
-        specialistId,
-        description,
-        photo: firstFileName,
-        diplomaPhoto: secondFileName,
-      },
-      update: {
-        description,
-        ...(firstFileName && { photo: firstFileName }),
-        ...(secondFileName && { diplomaPhoto: secondFileName }),
-      },
-    });
+      data: updateData
+    })
   }
 
   async findAll() {
@@ -40,10 +56,10 @@ export class SpecialistCardService {
         specialist: {
           select: {
             firstName: true,
-            lastName: true
-          }
-        }
-      }
+            lastName: true,
+          },
+        },
+      },
     });
   }
 

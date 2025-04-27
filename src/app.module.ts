@@ -10,6 +10,8 @@ import { SpecialistCardModule } from './specialist-card/specialist-card.module';
 import { FileModule } from './file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { GalleryModule } from './gallery/gallery.module';
+import { ManualsModule } from './manuals/manuals.module';
+import { PostsModule } from './posts/posts.module';
 import *as path from 'path';
 
 @Module({
@@ -30,6 +32,8 @@ import *as path from 'path';
       rootPath: path.resolve(__dirname, '..', 'static'),
     }),
     GalleryModule,
+    ManualsModule,
+    PostsModule,
   ]
 })
 export class AppModule {}
