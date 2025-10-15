@@ -1,8 +1,8 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { GroupSession } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGroupSessionDto } from '../dto/create-group-session.dto';
 import { CreateIndividualSessionsDto } from '../dto/create-individual-sessions.dto';
+import { GroupSession } from '@prisma/client';
 
 @Injectable()
 export class SchedulerService {
@@ -88,18 +88,18 @@ export class SchedulerService {
       throw new BadRequestException('Main specialist has conflicts in stages');
     }
 
-    const mainSpecialistFree = await this.checkConflicts(
-      'specialist',
-      dto.mainSpecialistId,
-      days,
-      [{ start: dto.firstStageEndTime, end: dto.secondStageStartTime }],
-    );
-
-    if (!mainSpecialistFree) {
-      throw new BadRequestException(
-        'Main specialist must be free between stages',
-      );
-    }
+    // const mainSpecialistFree = await this.checkConflicts(
+    //   'specialist',
+    //   dto.mainSpecialistId,
+    //   days,
+    //   [{ start: dto.firstStageEndTime, end: dto.secondStageStartTime }],
+    // );
+    //
+    // if (!mainSpecialistFree) {
+    //   throw new BadRequestException(
+    //     'Main specialist must be free between stages',
+    //   );
+    // }
   }
 
   async validateSpecialistForGroup(
