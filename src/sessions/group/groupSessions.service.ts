@@ -15,6 +15,8 @@ export class GroupSessionsService {
     const { mainSpecialistId, ...rest } = dto;
     await this.scheduler.validateGroupSession(dto);
 
+    await this.scheduler.validateGroupSession(dto);
+
     return this.prisma.groupSession.create({
       data: {
         ...rest,

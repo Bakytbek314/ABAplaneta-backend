@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Debt } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDebtDto } from './dto/createDebt.dto';
 import { CreatePaymentDto } from './dto/createPayment.dto';

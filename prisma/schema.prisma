@@ -160,6 +160,24 @@ model IncomeExpense {
 }
 
 model Gallery {
-  id Int @id @default(autoincrement())
+  id    Int    @id @default(autoincrement())
   photo String
+}
+
+model Manual {
+  id           Int    @id @default(autoincrement())
+  documentName String @default("Безымя́нный") @map("document_name")
+  document     String
+
+  @@map("manuals")
+}
+
+model Post {
+  id          Int    @id @default(autoincrement())
+  photo       String
+  description String
+
+  createdAt DateTime @default(now())
+
+  @@map("posts")
 }

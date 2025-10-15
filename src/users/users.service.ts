@@ -36,7 +36,50 @@ export class UsersService {
           },
         },
         groupSessions: true,
-        developmentResults: true,
+        developmentResults: {
+          include: {
+            specialist: {
+              select: {
+                specialization: true,
+              },
+            },
+          },
+        },
+        payments: true,
+        debts: true,
+      },
+    });
+  }
+
+  async getPatient(id: number): Promise<Patient> {
+    return this.prisma.patient.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            login: true,
+            createdAt: true,
+          },
+        },
+        individualSession: {
+          include: {
+            specialist: {
+              select: {
+                specialization: true,
+              },
+            },
+          },
+        },
+        groupSessions: true,
+        developmentResults: {
+          include: {
+            specialist: {
+              select: {
+                specialization: true,
+              },
+            },
+          },
+        },
         payments: true,
         debts: true,
       },

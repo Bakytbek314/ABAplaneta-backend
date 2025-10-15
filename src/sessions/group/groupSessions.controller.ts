@@ -7,8 +7,8 @@ import { RolesGuard } from 'src/auth/role/roles.guard';
 import { Role } from 'src/auth/role/role.enum';
 
 @Controller('sessions')
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// @Roles(Role.ADMIN)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
 export class GroupSessionsController {
   constructor(private groupSessionsService: GroupSessionsService) {}
 

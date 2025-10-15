@@ -11,8 +11,8 @@ export class GalleryController {
   constructor(private readonly galleryService: GalleryService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'photo', maxCount: 1 },

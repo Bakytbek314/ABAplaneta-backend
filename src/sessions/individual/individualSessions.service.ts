@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateIndividualSessionsDto } from '../dto/create-individual-sessions.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Role } from 'src/auth/role/role.enum';
 import { SchedulerService } from '../scheduler/scheduler.service';
 
 @Injectable()

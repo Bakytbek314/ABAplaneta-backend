@@ -8,10 +8,10 @@ import { Roles } from 'src/auth/role/role.decorator';
 import { Role } from 'src/auth/role/role.enum';
 
 @Controller('payment')
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// @Roles(Role.ADMIN)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(private paymentService: PaymentService) {}
 
   @Post()
   async createPayment(@Body() createPaymentDto: CreatePaymentDto) {
@@ -19,7 +19,6 @@ export class PaymentController {
   }
 
   @Post("debt")
-  // @Roles(Role.ADMIN)
   async createDebt(@Body() createDebtDto: CreateDebtDto) {
     return this.paymentService.createDebt(createDebtDto);
   }
